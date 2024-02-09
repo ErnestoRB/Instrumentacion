@@ -74,3 +74,8 @@ pdf.cell(0,10, f"Semi-Intercuartil (Q1-Q3)/2 : {coef_variacion:.2f}", new_x=XPos
 
 pdf.output("output/report.pdf")
 plt.show()
+plt.scatter(range(1,len(voltaje)+1),voltaje)
+plt.title("Variacion de voltaje sobre tiempo")
+plt.xlabel("Elemento")
+plt.ylabel("Voltaje")
+plt.show()
