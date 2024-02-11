@@ -2,20 +2,26 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import tabula 
 import os
+import argparse
 from fpdf import FPDF, XPos, YPos
 
 if not os.path.exists("output"):
    os.mkdir("output")
-   
-   
 
-df = tabula.read_pdf("./input.pdf", pages="all")
+parser = argparse.ArgumentParser(
+                    description='Transforma una tabla contenida en un PDF y genera reportes en forma de graficas y un documento PDF',
+                    epilog='BashCrashers 2024')
+
+parser.add_argument("-i", "--input", "--entrada",type=str,help="Archivo de entrada (PDF)", default="./input.pdf")
+parser.add_argument("-o", "--output","--salida",type=str,help="Archivo de salida (PDF)", default="./report.pdf")
+
+args = parser.parse_args()
+
+df = tabula.read_pdf(args.input, pages="all")
 df = df[0]
 df = df.dropna()
 v_real = 127
-print(df.head())
 voltaje = df.iloc[:,2]
-print(voltaje)
 err_df = pd.DataFrame()
 err_df["voltaje"] = voltaje
 err_df["err_abs"] = voltaje.apply(lambda x: abs(v_real-x))
@@ -32,6 +38,7 @@ rango = voltaje.max() - voltaje.min()
 varianza = voltaje.var()
 coef_variacion = desv_est / prom
 inter = (voltaje.quantile(.25) - voltaje.quantile(.50)) / 2
+plt.figure("Histograma")
 voltaje.hist() #histograma
 
 plt.axvline(x=prom, color="r", label="Promedio") # Linea 
@@ -72,10 +79,10 @@ pdf.cell(0,10, f"Rango: {rango:.2f}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 pdf.cell(0,10, f"Coeficiente de variacion: {coef_variacion:.2f}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 pdf.cell(0,10, f"Semi-Intercuartil (Q1-Q3)/2 : {coef_variacion:.2f}", new_x=XPos.LMARGIN, new_y=YPos.NEXT)
 
-pdf.output("output/report.pdf")
-plt.show()
+pdf.output(os.path.join("output",args.output.replace(".pdf", "")+".pdf"))
+plt.figure("Variacion de voltaje")
 plt.scatter(range(1,len(voltaje)+1),voltaje)
 plt.title("Variacion de voltaje sobre tiempo")
-plt.xlabel("Elemento")
+plt.xlabel("# Elemento")
 plt.ylabel("Voltaje")
 plt.show()
