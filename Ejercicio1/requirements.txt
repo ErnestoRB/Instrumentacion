@@ -1,0 +1,6 @@
+fpdf==1.7.2
+fpdf2==2.7.7
+matplotlib==3.8.2
+pandas==2.2.0
+tabula==1.0.5
+tabula_py==2.9.0
