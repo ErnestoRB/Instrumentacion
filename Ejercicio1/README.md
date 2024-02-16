@@ -8,5 +8,5 @@ python3 -m pip install -r requeriments.txt
 
 ```sh
 python3 -m pip install pyinstaller
-pyinstaller main.py
+pyinstaller --collect-data tabula main.py
 ```
