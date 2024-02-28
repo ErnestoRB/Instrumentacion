@@ -25,7 +25,7 @@ export function Sensor3() {
   }, []);
 
   return (
-    <Card title="Sensor PIR (Passive Infra Red)">
+    <Card title="Sensor PIR (Passive Infrared)">
       <button
         className="bg-blue-600 active:bg-blue-700 text-white rounded-sm p-2"
         onClick={() => {
@@ -42,7 +42,7 @@ export function Sensor3() {
             .finally(() => setLoading(false));
         }}
       >
-        Recargar
+        Actualizar valor
       </button>
       {loading && <p>Loading...</p>} {value && <p>Valor: {value}</p>}{" "}
       {error && (
