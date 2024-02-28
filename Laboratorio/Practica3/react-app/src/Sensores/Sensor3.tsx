@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Card } from "../Card";
 
-const path = "/ajax/1";
+const path = "/ajax/3";
 
-export function Sensor1() {
+export function Sensor3() {
   const [value, setValue] = useState<string | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
@@ -25,7 +25,7 @@ export function Sensor1() {
   }, []);
 
   return (
-    <Card title="Sensor Temperatura">
+    <Card title="Sensor PIR (Passive Infra Red)">
       <button
         className="bg-blue-600 active:bg-blue-700 text-white rounded-sm p-2"
         onClick={() => {
@@ -44,7 +44,7 @@ export function Sensor1() {
       >
         Recargar
       </button>
-      {loading && <p>Loading...</p>} {value && <p>Valor: {value} C°</p>}{" "}
+      {loading && <p>Loading...</p>} {value && <p>Valor: {value}</p>}{" "}
       {error && (
         <p className="text-red-500">
           Sucedio un error al obtener la informacion

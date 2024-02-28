@@ -1,4 +1,8 @@
 import { Sensor1 } from "./Sensores/Sensor1";
+import { Sensor2 } from "./Sensores/Sensor2";
+import { Sensor3 } from "./Sensores/Sensor3";
+import { Sensor4 } from "./Sensores/Sensor4";
+
 function App() {
   return (
     <div className="flex flex-col min-h-screen gap-y-2">
@@ -9,9 +13,9 @@ function App() {
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 my-2">
             <Sensor1 />
-            <Sensor1 />
-            <Sensor1 />
-            <Sensor1 />
+            <Sensor2 />
+            <Sensor3 />
+            <Sensor4 />
           </div>
         </div>
       </div>
