@@ -5,16 +5,13 @@
 #include <DHT_U.h>
 
 #define RELAY_PIN 7
-#define DIR_PIN 2
-#define ECHO 5
-#define TRIGGER 6
-#define DHT_PIN 3
+#define PIR_PIN 3
+#define DHT_PIN 6
+#define POTENCIOMETRO_PIN 0
 #define CHIP_SELECT 4  // Pin CS de la tarjeta SD
-unsigned long currentMilis = 0;
-unsigned long previousPirUpdate = 0;
-unsigned long previousUpdate = 0;
-
-int isActive = 0;
+#define DATA_SPEED 1000
+/* unsigned long currentMilis = 0;
+unsigned long previousUpdate = 0; */
 
 // Configuración de la tarjeta SD
 SdFat sd;
@@ -47,17 +44,26 @@ void setup() {
   Serial.println(Ethernet.localIP());
 
   pinMode(RELAY_PIN, OUTPUT);
-  pinMode(DIR_PIN, INPUT);
-  pinMode(ECHO, INPUT);
-  pinMode(TRIGGER, OUTPUT);
+  pinMode(PIR_PIN, INPUT);
+  dht.begin();
 }
 
 void loop() {
-  if (leerDistancia() <= 10) {
-    digitalWrite(RELAY_PIN, LOW);
-  } else {
-    digitalWrite(RELAY_PIN, HIGH);
-  }
+  /* currentMilis = millis();
+  if (currentMilis - previousUpdate >= DATA_SPEED) {
+    if(calcularHumedad() >= 30) {
+      digitalWrite(RELAY_PIN, LOW);
+    } else {
+      digitalWrite(RELAY_PIN, HIGH);
+    }
+    previousUpdate = currentMilis;
+
+  } */
+  if(calcularHumedad() >= 30) {
+      digitalWrite(RELAY_PIN, LOW);
+    } else {
+      digitalWrite(RELAY_PIN, HIGH);
+    }
   EthernetClient client = server.available();
   if (client) {
     Serial.println("Cliente conectado.");
@@ -89,11 +95,17 @@ void loop() {
         if(filename.equals("1")){
           client.println(calcularTemperatura());
         } else if(filename.equals("2")) {
-          client.println(calcularHumedad());
+          client.print(calcularHumedad());
+          /* if(calcularHumedad() >= 30) {
+            client.println(" (Encendido)");
+          } else {
+            client.println(" (Apagado)");
+          } */
         } else if(filename.equals("3")) {
-          client.println(leerDir() == HIGH _);
+          client.println(leerPir() == HIGH ? "OFF": "ON");
         } else if(filename.equals("4")) {
-          client.println(leerDistancia());
+          client.print(leerPotenciometro());
+          client.println(" %");
         }   else {
           client.println("Sensor no encontrado");
         }
@@ -150,14 +162,12 @@ double calcularHumedad() {
   return dht.readHumidity();
 }
 
-int leerDir() {
-  return digitalRead(DIR_PIN);
-}
-double leerDistancia() {
-  digitalWrite(TRIGGER,HIGH);
-  delay(1);
-  digitalWrite(TRIGGER,LOW);
-  return pulseIn(ECHO, HIGH) / 58.2;
+int leerPir() {
+  return digitalRead(PIR_PIN);
 }
 
+
+int leerPotenciometro() {
+  return map(analogRead(POTENCIOMETRO_PIN), 0, 1023, 0, 100);  // convertir a porcentaje
+}
 
